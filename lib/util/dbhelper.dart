@@ -140,9 +140,6 @@
 //   }
 // }
 
-
-
-
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import '../model/task.dart';
@@ -201,67 +198,50 @@ import '../model/todo.dart';
 //   }
 // }
 
-
-
-
-
-
-
-class DatabaseHelper{
+class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
-  Database? _database ;
+  Database? _database;
 
   DatabaseHelper._internal();
 
-  factory DatabaseHelper(){
+  factory DatabaseHelper() {
     return _instance;
   }
 
-  Future<Database> get database async{
-    if( _database != null) return _database!;
+  Future<Database> get database async {
+    if (_database != null) return _database!;
 
     _database = await _initDatabase();
 
     return _database!;
-
   }
 
-
-
-
-  Future<Database> _initDatabase() async{
-    String path =  join(await getDatabasesPath() , 'taskList_database.db');
+  Future<Database> _initDatabase() async {
+    String path = join(await getDatabasesPath(), 'taskList_database.db');
     return await openDatabase(path, version: 1, onCreate: _onCreate);
   }
 
   Future<void> _onCreate(Database db, int version) async {
-    final db = await database;
-    await db.execute('CREATE TABLE tasks(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT , description TEXT, priority INTEGER )');
+    await db.execute(
+        'CREATE TABLE tasks(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT , description TEXT, priority INTEGER )');
   }
 
-
-  Future<int> addTask(Task task) async{
+  Future<int> addTask(Task task) async {
     final db = await database;
     return await db.insert('tasks', task.toMap());
   }
 
-
-  Future<List<Task>> getAllTasks() async{
-
+  Future<List<Task>> getAllTasks() async {
     final db = await database;
-    final List<Map<String,dynamic>> allTasks = await db.query('tasks'); // not including the columns i.e making columns: null, will return all columns  so instead of this: db.query('tasks',columns: ['id', 'title', 'description', 'priority']); just 'tasks' which is the name of the table is okay
-   return List.generate(allTasks.length, (index) { return Task.fromObject(allTasks[index]);});}
+    final List<Map<String, dynamic>> allTasks = await db.query(
+        'tasks'); // not including the columns i.e making columns: null, will return all columns  so instead of this: db.query('tasks',columns: ['id', 'title', 'description', 'priority']); just 'tasks' which is the name of the table is okay
+    return List.generate(allTasks.length, (index) {
+      return Task.fromObject(allTasks[index]);
+    });
+  }
 
-
-
-
-  Future<int> deleteTask(int id) async{
+  Future<int> deleteTask(int id) async {
     final db = await database;
     return await db.delete('tasks', where: 'id =?', whereArgs: [id]);
   }
-
-
-
-
 }
-
