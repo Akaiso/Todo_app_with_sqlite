@@ -41,8 +41,7 @@ class _TaskListState extends State<TaskList> {
       _titleController.clear();
       _descriptionController.clear();
       _getTaskList();
-      debugPrint(
-          'This is newtask :::::::::::::::::::::::::::::>>>>>${newtask.title + newtask.description}');
+
     }
   }
 
@@ -54,6 +53,7 @@ class _TaskListState extends State<TaskList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomSheet: const Text('    powered by BEAKS', textAlign:TextAlign.center),
       appBar: AppBar(
         title: const Text('Task List'),
       ),
